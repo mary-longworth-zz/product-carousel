@@ -1,0 +1,137 @@
+{% assign product_limit = 4 %}
+
+<div class="the-products">
+  {% if section.settings.title != blank %}
+  <div class="section-header text-center">
+    <h2>Product Carousel</h2>
+  </div>
+  {% endif %}
+
+  <button class="btn-prev">{% include 'icon-arrow-left' %}</button>
+  <button class="btn-next">{% include 'icon-arrow-right' %}</button>
+
+ <div class="grid">
+  {% for product in collections.test.products limit: product_limit %}
+    <div class="grid__item medium-up--one-quarter small--one-half product-{{ forloop.index }}">
+        <div class="productSlides">
+            <a href="{{ product.url }}">
+                <img class="product-slide-img" src="{{ product.featured_image | img_url: '500x500' }}">
+                <div class="h4 grid-view-item__title text-center">{{ product.title }}</div>
+            </a>
+        </div>
+    </div>
+  {% endfor %}
+  </div>
+
+</div>
+
+<script>
+document.getElementsByClassName('btn-prev')[0].addEventListener("click", function (prevBtn) {
+  for (let i = 2; i < 5; i++) {
+    var temp = document.querySelectorAll('.product-'+ i)[0].innerHTML;
+    document.querySelectorAll('.product-'+ i)[0].innerHTML = document.querySelectorAll('.product-' + (i-1))[0].innerHTML;
+    document.querySelectorAll('.product-'+ (i-1))[0].innerHTML = temp;
+  }
+});
+
+document.getElementsByClassName('btn-next')[0].addEventListener("click", function (nextBtn) {
+  for (let j = 4; j > 1; j--) {
+      let y = j-1;
+      var temp1 = document.querySelectorAll('.product-'+ (y))[0].innerHTML;
+      document.querySelectorAll('.product-'+ (y))[0].innerHTML = document.querySelectorAll('.product-' + j)[0].innerHTML;
+      document.querySelectorAll('.product-'+ j)[0].innerHTML = temp1;
+  }
+});
+</script>
+
+
+{% comment %}
+<script>
+let titleArray = [];
+let urlArray = [];
+let imgArray = [];
+{% for product in collections.test.products limit: product_limit %}
+  titleArray.push('{{ product.title }}');
+  urlArray.push('{{ product.url }}');
+  imgArray.push('{{ product.featured_image }}');
+{% endfor %}
+
+
+console.log(titleArray);
+console.log(urlArray);
+console.log(imgArray);
+
+</script>
+{% endcomment %}
+
+
+{% comment %}
+<script>
+
+
+   
+  
+  //set image to 1 and display first image
+  let slideIndex = 1;
+  showDivs(slideIndex);
+
+  // when the arrows are clicked it calls this function
+  function plusDivs(n) {
+    showDivs(slideIndex += n);
+  }
+  
+  function showDivs(n) {
+     
+    let i;
+    let x = document.getElementsByClassName("productSlides");
+    
+      // if you go past the number of slides available, return to the first one
+      if (n > x.length) {
+        slideIndex = 1
+      } 
+      // if you click previous when you are on slide 1, this brings you to the last slide
+      if (n < 1) {
+         slideIndex = x.length
+      };
+    
+    // loop through the slides and display none on all
+     for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none"; 
+    }
+    // show the first slide
+      x[slideIndex-1].style.display = "block"; 
+     
+}
+  
+</script>
+{% endcomment %}
+
+{% schema %}
+  {
+    "name": "Section name",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Featured products"
+      },
+      {
+        "id": "collection",
+        "type": "collection",
+        "label": "Collection"
+      }
+
+  ],
+  "presets": [
+      {
+        "name": "Product Slider",
+        "category": "Image"
+      }
+    ]
+
+  }
+{% endschema %}
+
+
+
