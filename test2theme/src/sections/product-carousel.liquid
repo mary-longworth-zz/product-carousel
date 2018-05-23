@@ -1,22 +1,23 @@
-{% assign product_limit = 8 %}
+{% assign product_limit = 5 %}
 
 <div class="the-products">
   {% if section.settings.title != blank %}
   <div class="section-header text-center">
-    <h2>{{ section.settings.title | escape }}</h2>
+    <h2>Product Carousel</h2>
   </div>
   {% endif %}
 
-  <button class="btn-prev" onclick="plusDivs(-1)">{% include 'icon-arrow-left' %}</button>
-  <button class="btn-next" onclick="plusDivs(+1)">{% include 'icon-arrow-right' %}</button>
 
- <div class="grid">
+  <button class="btn-prev">{% include 'icon-arrow-left' %}</button>
+  <button class="btn-next">{% include 'icon-arrow-right' %}</button>
+
+ <div class="grid multiple-items">
   {% for product in collections.test.products limit: product_limit %}
-    <div class="grid__item medium-up--one-fifth small--one-half">
+    <div class="grid__item medium-up--one-whole small--one-half product-{{ forloop.index }}">
         <div class="productSlides">
             <a href="{{ product.url }}">
                 <img class="product-slide-img" src="{{ product.featured_image | img_url: '500x500' }}">
-                <div class="h4 grid-view-item__title text-center">{{ product.title }}</div>
+                {% comment %}<div class="h4 grid-view-item__title text-center">{{ product.title }}</div>{% endcomment %}
             </a>
         </div>
     </div>
@@ -25,6 +26,47 @@
 
 </div>
 
+<script>
+document.getElementsByClassName('btn-prev')[0].addEventListener("click", function (prevBtn) {
+  for (let i = 2; i < 5; i++) {
+    var temp = document.querySelectorAll('.product-'+ i)[0].innerHTML;
+    document.querySelectorAll('.product-'+ i)[0].innerHTML = document.querySelectorAll('.product-' + (i-1))[0].innerHTML;
+    document.querySelectorAll('.product-'+ (i-1))[0].innerHTML = temp;
+  }
+});
+
+document.getElementsByClassName('btn-next')[0].addEventListener("click", function (nextBtn) {
+  for (let j = 4; j > 1; j--) {
+      let y = j-1;
+      var temp1 = document.querySelectorAll('.product-'+ (y))[0].innerHTML;
+      document.querySelectorAll('.product-'+ (y))[0].innerHTML = document.querySelectorAll('.product-' + j)[0].innerHTML;
+      document.querySelectorAll('.product-'+ j)[0].innerHTML = temp1;
+  }
+});
+</script>
+
+
+{% comment %}
+<script>
+let titleArray = [];
+let urlArray = [];
+let imgArray = [];
+{% for product in collections.test.products limit: product_limit %}
+  titleArray.push('{{ product.title }}');
+  urlArray.push('{{ product.url }}');
+  imgArray.push('{{ product.featured_image }}');
+{% endfor %}
+
+
+console.log(titleArray);
+console.log(urlArray);
+console.log(imgArray);
+
+</script>
+{% endcomment %}
+
+
+{% comment %}
 <script>
 
 
@@ -63,6 +105,7 @@
 }
   
 </script>
+{% endcomment %}
 
 {% schema %}
   {
@@ -91,5 +134,31 @@
   }
 {% endschema %}
 
-
-
+<script>
+$('.multiple-items').slick({
+  centerMode: true,
+  centerPadding: '60px',
+  slidesToShow: 3,
+  responsive: [
+    {
+      breakpoint: 768,
+      settings: {
+        arrows: false,
+        centerMode: true,
+        centerPadding: '40px',
+        slidesToShow: 3
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        arrows: false,
+        centerMode: true,
+        centerPadding: '40px',
+        slidesToShow: 1
+      }
+    }
+  ]
+});
+		
+</script>
